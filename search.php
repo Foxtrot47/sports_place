@@ -1,6 +1,6 @@
 <?php
 
-include $_SERVER['DOCUMENT_ROOT'].'/the_sports_place/helpers/db_connect.php';
+include 'helpers/db_connect.php';
 echo '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">';
 echo '<link rel="stylesheet" href="css/nouislider.css" />';
 echo '<script src="js/nouislider.js"></script>';

@@ -1,6 +1,6 @@
 <?php
 
-include $_SERVER['DOCUMENT_ROOT'].'/the_sports_place/helpers/db_connect.php';
+include 'helpers/db_connect.php';
 
 $productid = $product_name = $product_main_category = "";
 

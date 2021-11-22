@@ -3,8 +3,8 @@
 // Will be used later for autologin
 $user_loggedin = false;
 
-include $_SERVER['DOCUMENT_ROOT'].'/the_sports_place/style.php';
-include $_SERVER['DOCUMENT_ROOT'].'/the_sports_place/helpers/db_connect.php';
+include 'style.php';
+include 'helpers/db_connect.php';
 ?>
 
 <nav class="bg-white shadow dark:bg-gray-800 sticky top-0 pr-4">

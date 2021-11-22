@@ -1,7 +1,7 @@
 <?php
 
-include $_SERVER['DOCUMENT_ROOT'].'/the_sports_place/style.php';
-include $_SERVER['DOCUMENT_ROOT'].'/the_sports_place/helpers/db_connect.php';
+include "style.php";
+include 'helpers/db_connect.php';
 
 ?>
 
