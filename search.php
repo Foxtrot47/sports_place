@@ -7,10 +7,22 @@ echo '<script src="js/nouislider.js"></script>';
 $cat_id = $subcat_id = $sortby = $sort_col = $filter_q = $page_no = $sort_q = $search_keyword =  NULL;
 include "Navbar.php";
 
+// Forming SQL query for searching
+$base_q = 'SELECT * FROM products ';
+$filter_q = NULL;
+
+// function to trim useless contents from form data
+function trim_input($data) {
+    $data = trim($data);
+    $data = stripslashes($data);
+    $data = htmlspecialchars($data);
+    return $data;
+  }
+
 if ($_SERVER["REQUEST_METHOD"] == "GET") {
 
     if ( array_key_exists('catid',$_GET) && $_GET['catid'] > 0) {
-        $cat_id = $_GET['catid'];
+        $cat_id = trim_input($_GET['catid']);
 
         // Find the category from category ID
         $sql = 'SELECT * FROM categories WHERE catid =' . $cat_id;
@@ -19,42 +31,32 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
     
             while($cat_row = $result->fetch_assoc()) {
                 $cat_name = $cat_row["catname"];
+                addFilter('product_main_category' , $cat_name , 'equals');
             }
         }
         // Find the subcategory from subcategory ID
         if ( array_key_exists('subcatid',$_GET) && $_GET['subcatid'] > 0 ) {
-            $subcat_id = $_GET['subcatid'];
+            $subcat_id = trim_input($_GET['subcatid']);
             $sql = 'SELECT * FROM subcategories WHERE subcatid =' . $subcat_id;
             $result = $conn->query($sql);
             if ($result->num_rows == 1) {
         
                 while($sub_row = $result->fetch_assoc()) {
                     $subcat_name = $sub_row["subcatname"];
+                    addFilter('product_sub_category',$subcat_name,"equals");
                 }
             }
         }
     }
     // Get Search keyword , page no and sort values if exist
-    if ( array_key_exists('search_keyword',$_GET))
-        $search_keyword = $_GET['search_keyword'];
+    if ( array_key_exists('product_name',$_GET))
+        addFilter('product_full_name' , trim_input($_GET['product_name']) , 'like');
     if ( array_key_exists('page_no',$_GET))
-        $page_no = $_GET['page_no'];
+        $page_no = trim_input($_GET['page_no']);
     if ( array_key_exists('sortby',$_GET))
-        $sortby = $_GET['sortby'];
+        $sortby = trim_input($_GET['sortby']);
 }
 
-// Forming SQL query for searching
-$base_q = 'SELECT * FROM products ';
-$filter_q = NULL;
-
-addFilter('product_name' , $search_keyword , 'like');
-
-if( isset($cat_id) ){ 
-    addFilter('product_main_category' , $cat_name , 'equals');
-    if( !is_null($subcat_id)){ 
-        addFilter('product_sub_category',$cat_name,"equals");
-    }
-}
 // Calculate Min Price Limit Disregarding user filter
     $min_limit_q = 'SELECT MIN(product_price) FROM products' . $filter_q;
     $limit_list = $conn->query($min_limit_q);
@@ -76,12 +78,12 @@ if( isset($cat_id) ){
         }
     }
 
-
-if (isset($_GET['min_limit']) && isset($_GET['min_limit'])) {
-    $min_limit = $_GET['min_limit'];
-    $max_limit = $_GET['max_limit'];
-    addFilter('product_price',$_GET['min_limit'],"range");
-    addFilter('product_price',$_GET['max_limit'],"range_end");
+// No need to seperate max limit check cuz it will be auto submitted as max price of current result
+if (isset($_GET['min_limit'])) {
+    $min_limit = trim_input($_GET['min_limit']);
+    $max_limit = trim_input($_GET['max_limit']);
+    addFilter('product_price',$min_limit,"range");
+    addFilter('product_price',$max_limit,"range_end");
 }
 
 function addFilter( $filter , $filter_val , $filter_type) {
@@ -97,7 +99,7 @@ function addFilter( $filter , $filter_val , $filter_type) {
     if ($filter_type == "equals")
         $GLOBALS['filter_q'] = $GLOBALS['filter_q'] . $filter . '=' . "\"" . $filter_val . "\"";
     else if($filter_type == "like") {
-        $GLOBALS['filter_q'] = ' LIKE  \'%' . $filter_val . '%\'';
+        $GLOBALS['filter_q'] = $GLOBALS['filter_q'] . $filter . ' LIKE  \'%' . $filter_val . '%\'';
     }
     else if($filter_type == "range") {
         $GLOBALS['filter_q'] = $GLOBALS['filter_q'] . $filter . ' BETWEEN ' . $filter_val;
