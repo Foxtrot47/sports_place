@@ -5,6 +5,7 @@ $user_loggedin = false;
 
 include 'style.php';
 include 'helpers/db_connect.php';
+include 'helpers/autologin.php';
 ?>
 
 <nav class="bg-white shadow dark:bg-gray-800 sticky top-0 pr-4">
@@ -30,12 +31,14 @@ include 'helpers/db_connect.php';
                 </div>
 <?php
     // Only Show Avatar if user is logged in
-    if ($user_loggedin == true) {
+    if ($_SESSION['user_loggedin'] == true) {
 ?>
                     <div class="flex items-center mt-4 md:mt-0">
                         <button type="button" class="flex items-center focus:outline-none" aria-label="toggle profile dropdown">
-                            <div class="w-8 h-8 overflow-hidden border-2 border-gray-400 rounded-full">
-                                <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=334&q=80" class="object-cover w-full h-full" alt="avatar">
+                            <div class="ml-5 h-16 w-16 overflow-hidden border-2 rounded-full">
+                                <a href="profile_info.php">
+                                    <img src="<?php echo $_SESSION['grav_url']; ?>" class="object-cover w-full h-full" alt="avatar">
+                                </a>
                             </div>
 
                             <h3 class="mx-2 text-sm font-medium text-gray-700 dark:text-gray-200 md:hidden">Khatab wedaa</h3>

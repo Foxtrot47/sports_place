@@ -75,14 +75,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $row = $result->fetch_assoc();
         // Compare our hash with saved hash
         if ( $hashed_pass == $row['user_password'] ) {
-            // Currently Im just saving hash as cookie for autologin , This is very bad and ill fix it
-            // TODO: Find a better way
-            $_COOKIE['session_id'] = $hashed_pass;
+            // Clear both cookie and session vars
+            unset($_COOKIE['local_token']);
+            if (isset($_SESSION['session_id']))
+                session_destroy();
+            // Hash email , password and current date and store as local token
+            $local_token  = sha1( $email . $password . time() . rand(10,100) );
+            $browser_info = get_browser(null, true);
+            $platform_name =  $browser_info['platform'];
+            $browser_name = $browser_info['browser'];
+            // add hashed platform name and browser to local toke and update session token on sql record
+            $session_token = $local_token . sha1($platform_name . $browser_name);
 
-            session_start();
-            $_SESSION['user_email'] = $email;
-
-            $user_loggedin = true;
+            $insert_q = 'UPDATE users SET session_token ="' . $session_token  . '" WHERE user_email="' . $email . '"';
+            $result = $conn->query($insert_q);
+            setcookie('local_token', $local_token , time() + (86400 * 120), "/") ;
+            header('Location: '.'index.php');
         }
         else{
             die("Bad Creds");
