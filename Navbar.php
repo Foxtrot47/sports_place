@@ -31,7 +31,7 @@ include 'helpers/autologin.php';
                 </div>
 <?php
     // Only Show Avatar if user is logged in
-    if ($_SESSION['user_loggedin'] == true) {
+    if (isset($_SESSION['user_loggedin']) && $_SESSION['user_loggedin'] == true) {
 ?>
                     <div class="flex items-center mt-4 md:mt-0">
                         <button type="button" class="flex items-center focus:outline-none" aria-label="toggle profile dropdown">

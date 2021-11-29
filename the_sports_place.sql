@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 23, 2021 at 04:07 AM
--- Server version: 10.4.21-MariaDB
--- PHP Version: 8.0.10
+-- Generation Time: Nov 29, 2021 at 03:31 AM
+-- Server version: 10.4.22-MariaDB
+-- PHP Version: 8.0.13
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -20,6 +20,34 @@ SET time_zone = "+00:00";
 --
 -- Database: `the_sports_place`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `addresses`
+--
+
+CREATE TABLE `addresses` (
+  `user_id` int(11) NOT NULL,
+  `addr_first_name` varchar(10) NOT NULL,
+  `addr_last_name` varchar(10) NOT NULL,
+  `addr_mobile_num` int(12) NOT NULL,
+  `addr_street_addr` varchar(10) NOT NULL,
+  `addr_landmark` varchar(10) NOT NULL,
+  `addr_additional` varchar(50) NOT NULL,
+  `addr_city` varchar(20) NOT NULL,
+  `addr_pin` int(10) NOT NULL,
+  `addr_country` varchar(20) NOT NULL,
+  `addr_state` varchar(20) NOT NULL,
+  `addr_dob` date DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `addresses`
+--
+
+INSERT INTO `addresses` (`user_id`, `addr_first_name`, `addr_last_name`, `addr_mobile_num`, `addr_street_addr`, `addr_landmark`, `addr_additional`, `addr_city`, `addr_pin`, `addr_country`, `addr_state`, `addr_dob`) VALUES
+(7, 'Joyal', 'Jose', 1234567891, 'random hou', 'random lan', 'Lorem ipsum dolor sit amet, consectetur adipiscing', 'Random City', 123456, 'USA', 'Texas', '2001-10-01');
 
 -- --------------------------------------------------------
 
@@ -85,6 +113,22 @@ INSERT INTO `products` (`product_id`, `product_full_name`, `product_main_categor
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `sellers`
+--
+
+CREATE TABLE `sellers` (
+  `seller_id` int(10) NOT NULL,
+  `seller_email` varchar(50) NOT NULL,
+  `first_name` varchar(10) NOT NULL,
+  `last_name` varchar(10) NOT NULL,
+  `seller_org` varchar(10) NOT NULL,
+  `seller_password` varchar(50) NOT NULL,
+  `session_token` varchar(500) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `subcategories`
 --
 
@@ -124,19 +168,27 @@ CREATE TABLE `users` (
   `user_email` varchar(50) NOT NULL,
   `first_name` varchar(30) NOT NULL,
   `last_name` varchar(30) NOT NULL,
-  `user_password` varchar(40) NOT NULL
+  `user_password` varchar(50) NOT NULL,
+  `session_token` varchar(500) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`user_id`, `user_email`, `first_name`, `last_name`, `user_password`) VALUES
-(7, 'joyaljoseneutron@gmail.com', 'JOYAL', 'JOSE', 'dab10da976c19d47767e6ac06bd74762b55a514e');
+INSERT INTO `users` (`user_id`, `user_email`, `first_name`, `last_name`, `user_password`, `session_token`) VALUES
+(7, 'jjneutron@outlook.com', 'JOYAL', 'JOSE', 'ca40544cad321ddce4cf059d72bc6dd18a50cccf', '2b40ef780308e981b643f21cc7cfe69f58e50e163fe73988914ad94cfe1323285ffd1b069c2d518c');
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `addresses`
+--
+ALTER TABLE `addresses`
+  ADD UNIQUE KEY `user_id_2` (`user_id`),
+  ADD KEY `user_id` (`user_id`);
 
 --
 -- Indexes for table `categories`
@@ -149,6 +201,12 @@ ALTER TABLE `categories`
 --
 ALTER TABLE `products`
   ADD PRIMARY KEY (`product_id`);
+
+--
+-- Indexes for table `sellers`
+--
+ALTER TABLE `sellers`
+  ADD PRIMARY KEY (`seller_id`);
 
 --
 -- Indexes for table `subcategories`
@@ -189,6 +247,16 @@ ALTER TABLE `subcategories`
 --
 ALTER TABLE `users`
   MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `addresses`
+--
+ALTER TABLE `addresses`
+  ADD CONSTRAINT `addresses_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
